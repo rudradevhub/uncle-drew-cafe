@@ -1,0 +1,123 @@
+/* GlobalHeader.module.css */
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  z-index: 9999;
+  
+  /* LAYOUT: Grid allows precise left/center/right placement */
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  
+  /* PADDING: Safe area from edges */
+  padding: 0 4vw;
+  max-width: 1600px;
+  margin: 0 auto;
+  
+  /* ALIGNMENT FIX: 
+     Last time we moved -2%.
+     This time we nudge it just a bit more to -2.5% to hit dead center.
+  */
+  transform: translateX(-2.5%); 
+  
+  pointer-events: none;
+}
+
+/* --- NAVIGATION GROUPS --- */
+.navLeft,
+.navRight {
+  display: flex;
+  /* Keep the tight gap so they stay close to the logo */
+  gap: 2rem; 
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  position: relative;
+  z-index: 10;
+}
+
+/* ALIGNMENT */
+.navLeft { justify-content: flex-end; padding-right: 2rem; }
+.navRight { justify-content: flex-start; padding-left: 2rem; }
+
+/* --- VISIBILITY STATES --- */
+.header[data-nav-visible="false"] .navLeft,
+.header[data-nav-visible="false"] .navRight {
+  opacity: 0;
+  transform: translateY(15px);
+  pointer-events: none;
+}
+
+.header[data-nav-visible="true"] .navLeft,
+.header[data-nav-visible="true"] .navRight {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* --- LINKS --- */
+.link {
+  font-family: var(--font-heading, sans-serif);
+  font-size: 1.25rem; 
+  font-weight: 700;
+  color: #1A1A1A;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  pointer-events: auto;
+  position: relative;
+  top: 4px;
+}
+
+.link:hover { opacity: 0.6; }
+
+/* --- CENTER CLUSTER --- */
+.centerCluster {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  pointer-events: auto;
+  
+  width: 450px; 
+  z-index: 20;
+}
+
+.wordmarkLink { text-decoration: none; display: block; }
+
+.wordmark {
+  font-family: var(--font-heading, sans-serif);
+  font-size: 3.5rem; 
+  font-weight: 700;
+  color: #1A1A1A;
+  margin: 0;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  line-height: 1;
+  
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- TAGLINE --- */
+.tagline {
+  position: absolute;
+  top: 100%; 
+  left: 50%;
+  transform: translateX(-50%);
+  
+  font-family: var(--font-body, serif);
+  font-size: 1rem;
+  color: #1A1A1A;
+  margin-top: 0.5rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  
+  transition: opacity 0.1s linear;
+}

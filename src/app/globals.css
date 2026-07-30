@@ -1,42 +1,30 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Add this at the top of globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+/* ... rest of your CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
+/* 1. PAGE SETUP */
+html, body {
+  width: 100%;
+  /* min-height allows the 3D library to stretch the page */
+  min-height: 100vh;
   margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: #F3F0E7;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* 2. CANVAS SETUP */
+canvas {
+  display: block;
+  outline: none;
+  opacity: 1 !important;
+  /* touch-action: none; <--- MUST BE REMOVED/COMMENTED OUT */
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+img {
+  display: block;
+  max-width: 100%;
 }
