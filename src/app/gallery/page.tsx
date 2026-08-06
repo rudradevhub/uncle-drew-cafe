@@ -1,8 +1,16 @@
 'use client';
 
-import { InfiniteCanvasScene } from '@/components/InfiniteCanvas/InfiniteCanvas';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { useIntroRegistry } from '@/hooks/useIntroRegistry';
+
+// --- THE FIX: DYNAMICALLY IMPORT THE 3D CANVAS ---
+// This tells Next.js to completely skip this component during the server build
+// and only load it once the user's browser (and 'window') is ready.
+const InfiniteCanvasScene = dynamic(
+  () => import('@/components/InfiniteCanvas/InfiniteCanvas').then((mod) => mod.InfiniteCanvasScene),
+  { ssr: false }
+);
 
 // --- CONFIGURATION ---
 const TOTAL_IMAGES = 62; 
