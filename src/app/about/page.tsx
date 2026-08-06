@@ -6,12 +6,9 @@ import HorizontalScroll from '@/components/modules/about/HorizontalScroll';
 import CinematicFooter from '@/components/modules/footer/CinematicFooter';
 import { useIntroRegistry } from '@/hooks/useIntroRegistry';
 import { useIntro } from '@/contexts/IntroContext';
-
-// --- NEW: Import GSAP and ScrollTrigger ---
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// Register the plugin
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -20,22 +17,32 @@ const ASSETS_TO_LOAD: string[] = [];
 
 export default function AboutPage() {
   useIntroRegistry(ASSETS_TO_LOAD);
-  
   const { setPageReady } = useIntro();
 
   useEffect(() => {
+    // 1. Force the browser to start at the top during Next.js soft-navigation
+    window.scrollTo(0, 0);
+
     const timer = setTimeout(() => {
       setPageReady(true);
       
-      // --- NEW: Force GSAP to recalculate sizes AFTER the overlay is gone ---
-      // Adding a tiny 100ms delay ensures the DOM is fully visible before calculating
-      setTimeout(() => {
+      // 2. Aggressive GSAP Refresh Strategy
+      // Next.js layout shifts often happen slightly after the component mounts.
+      // Firing this sequentially ensures GSAP catches the final layout height.
+      requestAnimationFrame(() => {
         ScrollTrigger.refresh();
-      }, 100);
+        setTimeout(() => ScrollTrigger.refresh(), 100);
+        setTimeout(() => ScrollTrigger.refresh(), 500);
+        setTimeout(() => ScrollTrigger.refresh(), 1000);
+      });
       
     }, 3000); 
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      // 3. Clean up GSAP triggers when leaving the page so they don't break other pages
+      ScrollTrigger.getAll().forEach(t => t.refresh());
+    };
   }, [setPageReady]);
 
   return (
@@ -51,7 +58,6 @@ export default function AboutPage() {
       <section className="px-6 md:px-16 max-w-7xl mx-auto py-16 md:py-32 border-t-2 border-[#1A1A1A]">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_2.5fr] gap-10 lg:gap-24">
           
-          {/* Left Column: Headings & Link */}
           <div className="flex flex-col items-start justify-start">
             <h2 className="text-[10px] md:text-xs font-mono font-bold uppercase tracking-[0.25em] text-[#1A1A1A]/50 mb-3 md:mb-4">
               In The Press
@@ -73,7 +79,6 @@ export default function AboutPage() {
             </a>
           </div>
 
-          {/* Right Column: Editorial Text with CSS Columns and Drop Cap */}
           <div className="text-[15px] md:text-[17px] leading-[1.8] text-[#1A1A1A]/80 font-medium md:columns-2 gap-12 space-y-6">
             
             <p className="first-letter:text-6xl md:first-letter:text-7xl first-letter:font-bold first-letter:float-left first-letter:mr-3 md:first-letter:mr-4 first-letter:mt-1 md:first-letter:mt-2 first-letter:leading-none first-letter:text-[#8B3A2B] first-letter:font-serif">
