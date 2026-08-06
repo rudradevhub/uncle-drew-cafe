@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { usePathname } from 'next/navigation'; // <-- NEW: Detects internal routing
 import CinematicHeader from '@/components/modules/header/CinematicHeader';
 import HorizontalScroll from '@/components/modules/about/HorizontalScroll';
 import CinematicFooter from '@/components/modules/footer/CinematicFooter';
@@ -9,6 +10,7 @@ import { useIntro } from '@/contexts/IntroContext';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+// Register the plugin
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -18,32 +20,33 @@ const ASSETS_TO_LOAD: string[] = [];
 export default function AboutPage() {
   useIntroRegistry(ASSETS_TO_LOAD);
   const { setPageReady } = useIntro();
+  const pathname = usePathname(); // <-- NEW: Get the current route
 
   useEffect(() => {
-    // 1. Force the browser to start at the top during Next.js soft-navigation
+    // 1. Force the page to lock down when navigating internally
+    setPageReady(false);
     window.scrollTo(0, 0);
+
+    // 2. Erase any ghost GSAP triggers left behind by Next.js soft-routing
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
     const timer = setTimeout(() => {
       setPageReady(true);
       
-      // 2. Aggressive GSAP Refresh Strategy
-      // Next.js layout shifts often happen slightly after the component mounts.
-      // Firing this sequentially ensures GSAP catches the final layout height.
+      // 3. Re-calculate the GSAP math only AFTER the layout is fully unlocked
       requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-        setTimeout(() => ScrollTrigger.refresh(), 100);
+        setTimeout(() => ScrollTrigger.refresh(), 150);
         setTimeout(() => ScrollTrigger.refresh(), 500);
-        setTimeout(() => ScrollTrigger.refresh(), 1000);
       });
       
     }, 3000); 
 
     return () => {
       clearTimeout(timer);
-      // 3. Clean up GSAP triggers when leaving the page so they don't break other pages
-      ScrollTrigger.getAll().forEach(t => t.refresh());
+      // Cleanup on exit so triggers don't break other pages
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill()); 
     };
-  }, [setPageReady]);
+  }, [setPageReady, pathname]); // <-- NEW: Re-run whenever the path changes
 
   return (
     <main className="w-full min-h-screen bg-[#F3F0E7] text-[#1A1A1A] relative selection:bg-[#1A1A1A] selection:text-[#F3F0E7] overflow-x-hidden">
