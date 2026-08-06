@@ -7,6 +7,15 @@ import CinematicFooter from '@/components/modules/footer/CinematicFooter';
 import { useIntroRegistry } from '@/hooks/useIntroRegistry';
 import { useIntro } from '@/contexts/IntroContext';
 
+// --- NEW: Import GSAP and ScrollTrigger ---
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register the plugin
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
 const ASSETS_TO_LOAD: string[] = [];
 
 export default function AboutPage() {
@@ -17,6 +26,13 @@ export default function AboutPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setPageReady(true);
+      
+      // --- NEW: Force GSAP to recalculate sizes AFTER the overlay is gone ---
+      // Adding a tiny 100ms delay ensures the DOM is fully visible before calculating
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+      
     }, 3000); 
 
     return () => clearTimeout(timer);
@@ -32,9 +48,7 @@ export default function AboutPage() {
       <HorizontalScroll />
 
       {/* 3. The Editorial Press Section (Vintage Magazine Style) */}
-      {/* FIX: Reduced padding from py-24 to py-16 on mobile */}
       <section className="px-6 md:px-16 max-w-7xl mx-auto py-16 md:py-32 border-t-2 border-[#1A1A1A]">
-        {/* FIX: Reduced gap from gap-16 to gap-10 on mobile */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_2.5fr] gap-10 lg:gap-24">
           
           {/* Left Column: Headings & Link */}
@@ -60,7 +74,6 @@ export default function AboutPage() {
           </div>
 
           {/* Right Column: Editorial Text with CSS Columns and Drop Cap */}
-          {/* FIX: Adjusted drop cap size for mobile (text-6xl) and tablet/desktop (md:text-7xl) */}
           <div className="text-[15px] md:text-[17px] leading-[1.8] text-[#1A1A1A]/80 font-medium md:columns-2 gap-12 space-y-6">
             
             <p className="first-letter:text-6xl md:first-letter:text-7xl first-letter:font-bold first-letter:float-left first-letter:mr-3 md:first-letter:mr-4 first-letter:mt-1 md:first-letter:mt-2 first-letter:leading-none first-letter:text-[#8B3A2B] first-letter:font-serif">

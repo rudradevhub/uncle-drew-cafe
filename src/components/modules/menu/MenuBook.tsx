@@ -9,8 +9,9 @@ interface MenuBookProps {
   currentPage: number;
 }
 
-const SPREAD_IMAGES = Array.from({ length: 17 }, (_, i) => 
-  `/menu-pages/page-${(i).toString().padStart(2, '0')}.jpg`
+// FIX: We added (i + 1) so it requests page-01.jpg instead of page-00.jpg
+const SPREAD_IMAGES = Array.from({ length: 16 }, (_, i) => 
+  `/menu-pages/page-${(i + 1).toString().padStart(2, '0')}.jpg`
 );
 
 const PHYSICAL_SHEETS = SPREAD_IMAGES.map((spreadUrl, index) => ({
