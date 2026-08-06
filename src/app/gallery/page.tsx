@@ -2,19 +2,24 @@
 
 import { InfiniteCanvasScene } from '@/components/InfiniteCanvas/InfiniteCanvas';
 import Link from 'next/link';
+import { useIntroRegistry } from '@/hooks/useIntroRegistry';
 
 // --- CONFIGURATION ---
-// You renamed images to 1.avif, 2.avif ... 62.avif
 const TOTAL_IMAGES = 62; 
 
 const cafeImages = Array.from({ length: TOTAL_IMAGES }, (_, i) => ({
-  // Generates: /gallery/1.avif, /gallery/2.avif ... up to /gallery/62.avif
   url: `/gallery/${i + 1}.avif`, 
   width: 1200, 
   height: 800
 }));
 
 export default function GalleryPage() {
+  // PRO PERFORMANCE STRATEGY:
+  // Preload only the first 12 images so the initial 3D viewport has textures ready instantly,
+  // while avoiding overwhelming the browser's network pipe with 62 concurrent downloads.
+  const criticalGalleryAssets = cafeImages.slice(0, 12).map(img => img.url);
+  useIntroRegistry(criticalGalleryAssets);
+
   return (
     <main style={{ width: '100vw', height: '100vh', overflow: 'hidden', background: '#000' }}>
       

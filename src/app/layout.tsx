@@ -1,47 +1,11 @@
-import type { Metadata, Viewport } from 'next';
-import localFont from 'next/font/local';
-
-import '../styles/variables.css';
+import type { Metadata } from 'next';
+import { IntroProvider } from '@/contexts/IntroContext';
+import IntroOverlay from '@/components/modules/intro/IntroOverlay'; // 1. Import the new overlay
 import './globals.css';
-
-const headingFont = localFont({
-  src: [
-    {
-      path: '../../public/fonts/AmaticSC-Regular.ttf',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/AmaticSC-Bold.ttf',
-      weight: '700',
-      style: 'normal',
-    },
-  ],
-  variable: '--font-heading',
-  display: 'swap',
-});
-
-const bodyFont = localFont({
-  src: [
-    {
-      path: '../../public/fonts/IndieFlower-Regular.ttf',
-      weight: '400',
-      style: 'normal',
-    },
-  ],
-  variable: '--font-body',
-  display: 'swap',
-});
-
-// FIX: Viewport is now a separate export
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-};
 
 export const metadata: Metadata = {
   title: 'Uncle Drew Cafe',
-  description: 'Handcrafted. Local. Honest.',
+  description: 'A premium cafe experience.',
 };
 
 export default function RootLayout({
@@ -50,8 +14,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${headingFont.variable} ${bodyFont.variable}`}>
-      <body>{children}</body>
+    <html lang="en">
+      <body className="antialiased bg-[#F3F0E7] text-[#1A1A1A]">
+        <IntroProvider>
+          
+          {/* 2. Mount the overlay outside of your page routes */}
+          <IntroOverlay />
+          
+          {children}
+        </IntroProvider>
+      </body>
     </html>
   );
 }
