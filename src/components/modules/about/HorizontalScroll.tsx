@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation'; // <-- NEW: Detects soft routing
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -20,15 +21,28 @@ const TILES = [
 
 export default function HorizontalScroll() {
   useIntroRegistry(TILES);
-
+  
+  const pathname = usePathname(); // <-- NEW: Tracks URL changes
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   
-  // 1. EXACT match to your header state and ref
   const [isHidden, setIsHidden] = useState(false);
+  const [isReady, setIsReady] = useState(false); // <-- NEW: Stops GSAP from calculating too early
   const lastYRef = useRef(0);
 
-  // 2. EXACT match to your header scroll tracking logic
+  // --- NEW: Sync GSAP initialization with your 3-second Intro Loader ---
+  useEffect(() => {
+    setIsReady(false); // Lock it down on navigation
+    
+    // Wait exactly 3 seconds for the loader, plus 100ms for the DOM to paint
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, 3100);
+
+    return () => clearTimeout(timer);
+  }, [pathname]);
+
+  // Header scroll tracking logic
   useEffect(() => {
     const handleScroll = () => {
       const currentY = window.scrollY || document.documentElement.scrollTop;
@@ -47,6 +61,9 @@ export default function HorizontalScroll() {
   }, []);
 
   useGSAP(() => {
+    // --- THE FIX: Do absolutely nothing until the page is fully ready ---
+    if (!isReady) return;
+
     const track = trackRef.current;
     const container = containerRef.current;
     if (!track || !container) return;
@@ -70,14 +87,11 @@ export default function HorizontalScroll() {
       scrub: 1,
       invalidateOnRefresh: true,
     });
-  }, { scope: containerRef });
+  }, { scope: containerRef, dependencies: [isReady] }); // <-- THE FIX: Re-run GSAP when isReady flips to true
 
   return (
     <div ref={containerRef} className="relative w-full h-[100dvh] overflow-hidden bg-[#F3F0E7]">
       
-      {/* 
-        3. Match the translation duration/easing of the header 
-      */}
       <div 
         className={`fixed top-6 left-6 md:top-8 md:left-8 z-[100] mix-blend-difference pointer-events-auto transition-all duration-500 ease-out ${
           isHidden ? '-translate-y-24 opacity-0' : 'translate-y-0 opacity-100'
