@@ -86,7 +86,7 @@ export default function Scene() {
         color="#4A90E2" // Beautiful Sky Blue
         distance={10}
         angle={1}
-        attenuation={5}
+        decay={5}
         intensity={0} // Starts invisible
       />
 
