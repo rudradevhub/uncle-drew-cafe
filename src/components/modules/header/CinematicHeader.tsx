@@ -20,7 +20,11 @@ const SOCIAL_LINKS = [
   { name: 'Maps', url: 'https://www.google.com/maps/place/uncle+drew+cafe/' },
 ];
 
-export default function CinematicHeader() {
+interface CinematicHeaderProps {
+  hideDesktopMenuButton?: boolean;
+}
+
+export default function CinematicHeader({ hideDesktopMenuButton = false }: CinematicHeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
@@ -98,6 +102,7 @@ export default function CinematicHeader() {
             className={`
               pointer-events-auto flex items-center gap-2 md:gap-3 px-5 py-2 md:px-6 md:py-2.5 rounded-full
               text-xs md:text-base font-bold uppercase tracking-widest transition-all duration-300
+              ${hideDesktopMenuButton ? 'md:hidden' : ''}
               ${isOpen 
                 ? 'bg-[#1A1A1A] text-[#F3F0E7] hover:bg-[#8B3A2B]' 
                 : isScrolled 
@@ -123,7 +128,6 @@ export default function CinematicHeader() {
               animate="open"
               exit="closed"
               variants={overlayVariants}
-              // FIX: Changed from overflow-hidden to overflow-y-auto so mobile users can scroll the full menu
               className="fixed inset-0 z-[90] bg-[#F3F0E7] flex flex-col selection:bg-[#1A1A1A] selection:text-[#F3F0E7] overflow-y-auto md:overflow-hidden"
             >
               <div className="fixed inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100\' height=\'100\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }} />
@@ -146,7 +150,6 @@ export default function CinematicHeader() {
                       <motion.li key={link.name} variants={itemVariants} className="w-full text-left border-b border-[#1A1A1A]/10 pb-4 last:border-0">
                         <Link
                           href={link.href}
-                          // FIX: Scaled text-5xl down to text-4xl for mobile specifically
                           className="group relative inline-block text-4xl md:text-7xl font-bold uppercase tracking-wider text-[#1A1A1A] transition-colors duration-300 hover:text-[#8B3A2B]"
                           style={{ fontFamily: 'var(--font-heading, sans-serif)' }}
                         >
@@ -160,7 +163,6 @@ export default function CinematicHeader() {
 
                 <motion.div 
                   variants={staggerVariants}
-                  // FIX: Removed 'hidden md:flex', added border-t for mobile stacking, adjusted spacing
                   className="flex flex-col justify-end w-full md:w-1/3 md:h-full pt-8 md:pt-0 pb-8 md:pb-24 border-t md:border-t-0 md:border-l border-[#1A1A1A]/10 md:pl-12"
                 >
                   <motion.div variants={itemVariants} className="space-y-10 md:space-y-12">
