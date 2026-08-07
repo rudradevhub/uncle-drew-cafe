@@ -9,13 +9,11 @@ interface MenuBookProps {
   currentPage: number;
 }
 
-// 1. EXACT match for your folder structure (Handling the ALL CAPS PAGE-00.jpg)
 const SPREAD_IMAGES = Array.from({ length: 17 }, (_, i) => {
-  if (i === 0) return '/menu-pages/PAGE-00.jpg'; // <-- The Linux/Vercel Case-Sensitivity Fix
+  if (i === 0) return '/menu-pages/PAGE-00.jpg';
   return `/menu-pages/page-${i.toString().padStart(2, '0')}.jpg`;
 });
 
-// 2. Your original, perfect mapping logic
 const PHYSICAL_SHEETS = SPREAD_IMAGES.map((spreadUrl, index) => ({
   frontImage: spreadUrl,
   backImage: SPREAD_IMAGES[index + 1] || null 
@@ -65,10 +63,12 @@ export default function MenuBook({ currentPage }: MenuBookProps) {
   return (
     <div 
       ref={containerRef}
-      className="relative max-w-full mx-auto mt-4"
+      className="relative w-full max-w-[95vw] sm:max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto my-auto"
       style={{ 
-        height: '78vh', 
-        aspectRatio: '16 / 9', 
+        height: '62vh',
+        minHeight: '380px',
+        maxHeight: '650px',
+        aspectRatio: '4 / 3 sm:16 / 9', 
         perspective: '3500px',
         boxShadow: '0 25px 60px -15px rgba(26, 26, 26, 0.18), 0 0 25px rgba(0, 0, 0, 0.04)'
       }}
@@ -93,7 +93,7 @@ export default function MenuBook({ currentPage }: MenuBookProps) {
                     backgroundSize: '200% 100%' 
                   }}
                 >
-                  <div className="absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-black/10 to-transparent pointer-events-none" />
+                  <div className="absolute inset-y-0 left-0 w-6 md:w-10 bg-gradient-to-r from-black/10 to-transparent pointer-events-none" />
                 </div>
               } 
               backContent={
@@ -106,7 +106,7 @@ export default function MenuBook({ currentPage }: MenuBookProps) {
                       backgroundSize: '200% 100%' 
                     }}
                   >
-                    <div className="absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-black/10 to-transparent pointer-events-none" />
+                    <div className="absolute inset-y-0 right-0 w-6 md:w-10 bg-gradient-to-l from-black/10 to-transparent pointer-events-none" />
                   </div>
                 ) : (
                   <div className="w-full h-full bg-[#FDFBF7] relative overflow-hidden" /> 
