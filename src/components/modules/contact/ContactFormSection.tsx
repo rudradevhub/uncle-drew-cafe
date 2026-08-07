@@ -28,11 +28,9 @@ export default function ContactFormSection() {
     setFormStatus('submitting');
     setErrorMessage('');
 
-    try {
-      // Automatically uses live URL if available, otherwise defaults to localhost
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      
-      const response = await fetch(`${API_URL}/api/contact`, {
+   try {
+      // Use a relative path so it automatically works on local and Vercel production
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
