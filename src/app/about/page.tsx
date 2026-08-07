@@ -21,7 +21,7 @@ export default function AboutPage() {
   const { setPageReady } = useIntro();
   const pathname = usePathname();
 
-useEffect(() => {
+  useEffect(() => {
     // 1. Force the page to lock down when navigating internally
     setPageReady(false);
     window.scrollTo(0, 0);
@@ -29,7 +29,7 @@ useEffect(() => {
     // 2. Erase any ghost GSAP triggers
     ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
-    // --- THE FIX: 4000ms (+1 intentional second of loading screen) ---
+    // --- THE FIX: 10000ms (Full 10 seconds of loading screen) ---
     const timer = setTimeout(() => {
       setPageReady(true);
       
@@ -39,7 +39,7 @@ useEffect(() => {
         setTimeout(() => ScrollTrigger.refresh(), 500);
       });
       
-    }, 4000); 
+    }, 10000); 
 
     return () => {
       clearTimeout(timer);

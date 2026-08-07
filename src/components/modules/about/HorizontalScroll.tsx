@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation'; // <-- NEW: Detects soft routing
+import { usePathname } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -22,22 +22,22 @@ const TILES = [
 export default function HorizontalScroll() {
   useIntroRegistry(TILES);
   
-  const pathname = usePathname(); // <-- NEW: Tracks URL changes
+  const pathname = usePathname();
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   
   const [isHidden, setIsHidden] = useState(false);
-  const [isReady, setIsReady] = useState(false); // <-- NEW: Stops GSAP from calculating too early
+  const [isReady, setIsReady] = useState(false);
   const lastYRef = useRef(0);
 
-// --- NEW: Sync GSAP initialization with your 4-second Intro Loader ---
+  // --- NEW: Sync GSAP initialization with your 10-second Intro Loader ---
   useEffect(() => {
     setIsReady(false); // Lock it down on navigation
     
-    // THE FIX: Wait exactly 4 seconds for the loader, plus 100ms for the DOM to paint
+    // THE FIX: Wait exactly 10 seconds for the loader, plus 100ms for the DOM to paint
     const timer = setTimeout(() => {
       setIsReady(true);
-    }, 4100);
+    }, 10100);
 
     return () => clearTimeout(timer);
   }, [pathname]);
@@ -87,7 +87,7 @@ export default function HorizontalScroll() {
       scrub: 1,
       invalidateOnRefresh: true,
     });
-  }, { scope: containerRef, dependencies: [isReady] }); // <-- THE FIX: Re-run GSAP when isReady flips to true
+  }, { scope: containerRef, dependencies: [isReady] });
 
   return (
     <div ref={containerRef} className="relative w-full h-[100dvh] overflow-hidden bg-[#F3F0E7]">
