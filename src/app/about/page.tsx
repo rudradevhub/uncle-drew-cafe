@@ -29,7 +29,7 @@ export default function AboutPage() {
     // 2. Erase any ghost GSAP triggers
     ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
-    // --- THE FIX: 10000ms (Full 10 seconds of loading screen) ---
+    // --- THE FIX: Exactly 2000ms as requested ---
     const timer = setTimeout(() => {
       setPageReady(true);
       
@@ -39,7 +39,7 @@ export default function AboutPage() {
         setTimeout(() => ScrollTrigger.refresh(), 500);
       });
       
-    }, 10000); 
+    }, 2000); 
 
     return () => {
       clearTimeout(timer);

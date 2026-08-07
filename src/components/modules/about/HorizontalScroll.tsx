@@ -30,14 +30,14 @@ export default function HorizontalScroll() {
   const [isReady, setIsReady] = useState(false);
   const lastYRef = useRef(0);
 
-  // --- NEW: Sync GSAP initialization with your 10-second Intro Loader ---
+  // --- NEW: Sync GSAP initialization with your 2-second Intro Loader ---
   useEffect(() => {
     setIsReady(false); // Lock it down on navigation
     
-    // THE FIX: Wait exactly 10 seconds for the loader, plus 100ms for the DOM to paint
+    // THE FIX: Wait exactly 2000ms, plus 100ms buffer for the DOM to paint
     const timer = setTimeout(() => {
       setIsReady(true);
-    }, 10100);
+    }, 2100);
 
     return () => clearTimeout(timer);
   }, [pathname]);
