@@ -21,25 +21,29 @@ export default function AboutPage() {
   const { setPageReady } = useIntro();
   const pathname = usePathname();
 
-  useEffect(() => {
-    // 1. Reset state and scroll position on internal navigation
+useEffect(() => {
+    // 1. Force the page to lock down when navigating internally
     setPageReady(false);
     window.scrollTo(0, 0);
 
+    // 2. Erase any ghost GSAP triggers
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+
+    // --- THE FIX: 4000ms (+1 intentional second of loading screen) ---
     const timer = setTimeout(() => {
       setPageReady(true);
       
-      // 2. Wait for the loading screen to vanish, then tell GSAP to recalculate heights
+      // 3. Re-calculate the GSAP math only AFTER the layout is fully unlocked
       requestAnimationFrame(() => {
         setTimeout(() => ScrollTrigger.refresh(), 150);
         setTimeout(() => ScrollTrigger.refresh(), 500);
       });
       
-    }, 3000); 
+    }, 4000); 
 
     return () => {
       clearTimeout(timer);
-      // We do NOT kill triggers here anymore. useGSAP inside HorizontalScroll handles it safely!
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill()); 
     };
   }, [setPageReady, pathname]);
 
